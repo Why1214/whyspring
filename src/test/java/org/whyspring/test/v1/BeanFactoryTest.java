@@ -1,19 +1,31 @@
 package org.whyspring.test.v1;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.whyspring.beans.BeanDefinition;
 import org.whyspring.beans.factory.BeanCreationException;
 import org.whyspring.beans.factory.BeanDefinitionStoreException;
-import org.whyspring.beans.factory.BeanFactory;
 import org.whyspring.beans.factory.support.DefaultBeanFactory;
+import org.whyspring.beans.factory.xml.XmlBeanDefinitionReader;
 import org.whyspring.service.v1.PetStoreService;
 
 public class BeanFactoryTest {
 
+    private DefaultBeanFactory factory = null;
+
+    private XmlBeanDefinitionReader reader = null;
+
+    @Before
+    public void setUp(){
+        factory = new DefaultBeanFactory();
+        reader = new XmlBeanDefinitionReader(factory);
+    }
+
     @Test
     public void testGetBean() {
-        BeanFactory factory = new DefaultBeanFactory("petstore-v1.xml");
+
+        reader.loadBeanDefinition("petstore-v1.xml");
         BeanDefinition bd = factory.getBeanDefinition("petStore");
         Assert.assertEquals("org.whyspring.service.v1.PetStoreService", bd.getBeanClassName());
         PetStoreService petStoreService = (PetStoreService) factory.getBean("petStore");
@@ -22,8 +34,8 @@ public class BeanFactoryTest {
 
     @Test
     public void testInvalidBean() {
-        BeanFactory factory = new DefaultBeanFactory("petstore-v1.xml");
 
+        reader.loadBeanDefinition("petstore-v1.xml");
         try {
             factory.getBean("invalidBean");
         } catch (BeanCreationException e) {
@@ -37,7 +49,7 @@ public class BeanFactoryTest {
     public void testInvalidXML() {
 
         try {
-            new DefaultBeanFactory("xxx-v1.xml");
+            reader.loadBeanDefinition("xxx.xml");
         } catch (BeanDefinitionStoreException e) {
             return;
         }
