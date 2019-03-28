@@ -4,16 +4,20 @@ import org.whyspring.beans.factory.support.DefaultBeanFactory;
 import org.whyspring.beans.factory.xml.XmlBeanDefinitionReader;
 import org.whyspring.context.ApplicationContext;
 import org.whyspring.core.io.Resource;
+import org.whyspring.util.ClassUtils;
 
 public abstract class AbstractApplicationContext implements ApplicationContext {
 
     private DefaultBeanFactory factory;
 
-    public AbstractApplicationContext(String configFile){
+    private ClassLoader beanClassLoader;
+
+    public AbstractApplicationContext(String configFile) {
         factory = new DefaultBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
         Resource resource = getResourceByPath(configFile);
         reader.loadBeanDefinition(resource);
+        factory.setBeanClassLoader(this.getClassLoader());
     }
 
     public Object getBean(String beanId) {
@@ -21,4 +25,12 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     }
 
     public abstract Resource getResourceByPath(String configFile);
+
+    public void setBeanClassLoader(ClassLoader beanClassLoader) {
+        this.beanClassLoader = beanClassLoader;
+    }
+
+    public ClassLoader getClassLoader() {
+        return (this.beanClassLoader != null ? this.beanClassLoader : ClassUtils.getDefaultClassLoader());
+    }
 }

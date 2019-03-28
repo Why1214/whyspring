@@ -10,7 +10,7 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
     }
 
     public Resource getResourceByPath(String configFile) {
-        return new ClassPathResource(configFile);
+        return new ClassPathResource(configFile, this.getClassLoader());
     }
 
 

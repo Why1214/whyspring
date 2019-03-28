@@ -1,6 +1,6 @@
 package org.whyspring.context;
 
-import org.whyspring.beans.factory.BeanFactory;
+import org.whyspring.beans.factory.config.ConfigurableBeanFactory;
 
-public interface ApplicationContext extends BeanFactory {
+public interface ApplicationContext extends ConfigurableBeanFactory {
 }

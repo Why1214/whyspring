@@ -2,16 +2,18 @@ package org.whyspring.beans.factory.support;
 
 import org.whyspring.beans.BeanDefinition;
 import org.whyspring.beans.factory.BeanCreationException;
-import org.whyspring.beans.factory.BeanFactory;
+import org.whyspring.beans.factory.config.ConfigurableBeanFactory;
 import org.whyspring.util.ClassUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultBeanFactory implements BeanFactory, BeanDefinitionRegistry {
+public class DefaultBeanFactory implements ConfigurableBeanFactory, BeanDefinitionRegistry {
 
     // 存放所有bean的定义
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<String, BeanDefinition>(64);
+
+    private ClassLoader beanClassLoader;
 
     public DefaultBeanFactory() {
 
@@ -31,7 +33,7 @@ public class DefaultBeanFactory implements BeanFactory, BeanDefinitionRegistry {
             throw new BeanCreationException("Bean Definition does not exist");
         }
 
-        ClassLoader cl = ClassUtils.getDefaultClassLoader();
+        ClassLoader cl = this.getClassLoader();
 
         String beanClassName = bd.getBeanClassName();
 
@@ -43,5 +45,13 @@ public class DefaultBeanFactory implements BeanFactory, BeanDefinitionRegistry {
         } catch (Exception e) {
             throw new BeanCreationException("create bean for " + beanClassName + " failed", e);
         }
+    }
+
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        this.beanClassLoader = beanClassLoader;
+    }
+
+    public ClassLoader getClassLoader() {
+        return (this.beanClassLoader != null ? this.beanClassLoader : ClassUtils.getDefaultClassLoader());
     }
 }
