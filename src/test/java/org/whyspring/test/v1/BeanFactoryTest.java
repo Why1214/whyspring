@@ -8,6 +8,8 @@ import org.whyspring.beans.factory.BeanCreationException;
 import org.whyspring.beans.factory.BeanDefinitionStoreException;
 import org.whyspring.beans.factory.support.DefaultBeanFactory;
 import org.whyspring.beans.factory.xml.XmlBeanDefinitionReader;
+import org.whyspring.core.io.ClassPathResource;
+import org.whyspring.core.io.Resource;
 import org.whyspring.service.v1.PetStoreService;
 
 public class BeanFactoryTest {
@@ -25,7 +27,8 @@ public class BeanFactoryTest {
     @Test
     public void testGetBean() {
 
-        reader.loadBeanDefinition("petstore-v1.xml");
+        Resource resource = new ClassPathResource("petstore-v1.xml");
+        reader.loadBeanDefinition(resource);
         BeanDefinition bd = factory.getBeanDefinition("petStore");
         Assert.assertEquals("org.whyspring.service.v1.PetStoreService", bd.getBeanClassName());
         PetStoreService petStoreService = (PetStoreService) factory.getBean("petStore");
@@ -35,7 +38,8 @@ public class BeanFactoryTest {
     @Test
     public void testInvalidBean() {
 
-        reader.loadBeanDefinition("petstore-v1.xml");
+        Resource resource = new ClassPathResource("petstore-v1.xml");
+        reader.loadBeanDefinition(resource);
         try {
             factory.getBean("invalidBean");
         } catch (BeanCreationException e) {
@@ -49,7 +53,8 @@ public class BeanFactoryTest {
     public void testInvalidXML() {
 
         try {
-            reader.loadBeanDefinition("xxx.xml");
+            Resource resource = new ClassPathResource("xxx.xml");
+            reader.loadBeanDefinition(resource);
         } catch (BeanDefinitionStoreException e) {
             return;
         }

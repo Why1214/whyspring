@@ -8,6 +8,7 @@ import org.whyspring.beans.BeanDefinition;
 import org.whyspring.beans.factory.BeanDefinitionStoreException;
 import org.whyspring.beans.factory.support.BeanDefinitionRegistry;
 import org.whyspring.beans.factory.support.GenericBeanDefinition;
+import org.whyspring.core.io.Resource;
 import org.whyspring.util.ClassUtils;
 
 import java.io.IOException;
@@ -26,12 +27,11 @@ public class XmlBeanDefinitionReader {
         this.registry = registry;
     }
 
-    public void loadBeanDefinition(String configFile) {
+    public void loadBeanDefinition(Resource resource) {
         InputStream is = null;
 
         try {
-            ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
-            is = classLoader.getResourceAsStream(configFile);
+            is = resource.getInputStream();
 
             // 通过dom4j读取xml文件
             SAXReader reader = new SAXReader();
@@ -53,7 +53,7 @@ public class XmlBeanDefinitionReader {
                 BeanDefinition bd = new GenericBeanDefinition(beanId, beanClassName);
                 this.registry.registerBeanDefinition(beanId, bd);
             }
-        } catch (DocumentException e) {
+        } catch (Exception e) {
             throw new BeanDefinitionStoreException("IOException parsing XML document from ", e);
         } finally {
             if (is != null) {

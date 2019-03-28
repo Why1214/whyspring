@@ -1,20 +1,17 @@
 package org.whyspring.context.support;
 
-import org.whyspring.beans.factory.support.DefaultBeanFactory;
-import org.whyspring.beans.factory.xml.XmlBeanDefinitionReader;
-import org.whyspring.context.ApplicationContext;
+import org.whyspring.core.io.ClassPathResource;
+import org.whyspring.core.io.Resource;
 
-public class ClassPathXmlApplicationContext implements ApplicationContext {
+public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
 
-    private DefaultBeanFactory factory;
-
-    public ClassPathXmlApplicationContext(String configFile){
-        factory = new DefaultBeanFactory();
-        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
-        reader.loadBeanDefinition(configFile);
+    public ClassPathXmlApplicationContext(String configFile) {
+        super(configFile);
     }
 
-    public Object getBean(String beanId) {
-        return this.factory.getBean(beanId);
+    public Resource getResourceByPath(String configFile) {
+        return new ClassPathResource(configFile);
     }
+
+
 }
