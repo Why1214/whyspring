@@ -18,8 +18,9 @@ import java.util.Iterator;
 public class XmlBeanDefinitionReader {
 
     private static final String ID_ATTRIBUTE = "id";
-
     private static final String CLASS_ATTRIBUTE = "class";
+    private static final String SCOPE_ATTRIBUTE = "scope";
+
 
     private BeanDefinitionRegistry registry;
 
@@ -51,6 +52,9 @@ public class XmlBeanDefinitionReader {
 
                 // 将bean标签的数据存在一个BeanDefinition中，并将生成的BeanDefinition存在map中
                 BeanDefinition bd = new GenericBeanDefinition(beanId, beanClassName);
+                if (beanElement.attributeValue(SCOPE_ATTRIBUTE) != null) {
+                    bd.setScope(beanElement.attributeValue(SCOPE_ATTRIBUTE));
+                }
                 this.registry.registerBeanDefinition(beanId, bd);
             }
         } catch (Exception e) {
