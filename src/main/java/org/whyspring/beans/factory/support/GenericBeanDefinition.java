@@ -1,6 +1,10 @@
 package org.whyspring.beans.factory.support;
 
 import org.whyspring.beans.BeanDefinition;
+import org.whyspring.beans.PropertyValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GenericBeanDefinition implements BeanDefinition {
 
@@ -10,6 +14,8 @@ public class GenericBeanDefinition implements BeanDefinition {
     private boolean isSingleton = true;
     private boolean isPrototype = false;
     private String scope = SCOPE_DEFAULT;
+
+    private final List<PropertyValue> propertyValues = new ArrayList<PropertyValue>();
 
     public GenericBeanDefinition(String beanId, String beanClassName) {
         this.beanId = beanId;
@@ -39,4 +45,7 @@ public class GenericBeanDefinition implements BeanDefinition {
     }
 
 
+    public List<PropertyValue> getPropertyValues() {
+        return this.propertyValues;
+    }
 }
