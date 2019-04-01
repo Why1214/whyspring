@@ -13,6 +13,7 @@ import org.whyspring.beans.factory.config.RuntimeBeanReference;
 import org.whyspring.beans.factory.config.TypedStringValue;
 import org.whyspring.beans.factory.support.BeanDefinitionRegistry;
 import org.whyspring.beans.factory.support.GenericBeanDefinition;
+import org.whyspring.context.annotation.ClassPathBeanDefinitionScanner;
 import org.whyspring.core.io.Resource;
 import org.whyspring.util.StringUtils;
 
@@ -31,6 +32,9 @@ public class XmlBeanDefinitionReader {
     private static final String NAME_ATTRIBUTE = "name";
     public static final String CONSTRUCTOR_ARG_ELEMENT = "constructor-arg";
     public static final String TYPE_ATTRIBUTE = "type";
+    public static final String BEANS_NAMESPACE_URI = "http://www.springframework.org/schema/beans";
+    public static final String CONTEXT_NAMESPACE_URI = "http://www.springframework.org/schema/context";
+    private static final String BASE_PACKAGE_ATTRIBUTE = "base-package";
 
     private final Log log = LogFactory.getLog(getClass());
 
@@ -59,22 +63,12 @@ public class XmlBeanDefinitionReader {
             // 对子标签进行循环处理
             while (iter.hasNext()) {
                 Element beanElement = iter.next();
-                String beanId = beanElement.attributeValue(ID_ATTRIBUTE);
-                String beanClassName = beanElement.attributeValue(CLASS_ATTRIBUTE);
 
-                // 将bean标签的数据存在一个BeanDefinition中，并将生成的BeanDefinition存在map中
-                BeanDefinition bd = new GenericBeanDefinition(beanId, beanClassName);
-                if (beanElement.attributeValue(SCOPE_ATTRIBUTE) != null) {
-                    bd.setScope(beanElement.attributeValue(SCOPE_ATTRIBUTE));
+                if (this.isDefaultNamespace(beanElement.getNamespaceURI())) {
+                    parseDefaultElement(beanElement);
+                } else if (this.isContextNamespace(beanElement.getNamespaceURI())) {
+                    parseComponentElement(beanElement);
                 }
-
-                // 解析constructor-arg标签
-                parseConstructorArgElements(beanElement, bd);
-
-                // 解析property标签
-                parsePropertyElement(beanElement, bd);
-
-                this.registry.registerBeanDefinition(beanId, bd);
             }
         } catch (Exception e) {
             throw new BeanDefinitionStoreException("IOException parsing XML document from ", e);
@@ -87,6 +81,31 @@ public class XmlBeanDefinitionReader {
                 }
             }
         }
+    }
+
+    private void parseDefaultElement(Element beanElement) {
+        String beanId = beanElement.attributeValue(ID_ATTRIBUTE);
+        String beanClassName = beanElement.attributeValue(CLASS_ATTRIBUTE);
+
+        // 将bean标签的数据存在一个BeanDefinition中，并将生成的BeanDefinition存在map中
+        BeanDefinition bd = new GenericBeanDefinition(beanId, beanClassName);
+        if (beanElement.attributeValue(SCOPE_ATTRIBUTE) != null) {
+            bd.setScope(beanElement.attributeValue(SCOPE_ATTRIBUTE));
+        }
+
+        // 解析constructor-arg标签
+        parseConstructorArgElements(beanElement, bd);
+
+        // 解析property标签
+        parsePropertyElement(beanElement, bd);
+
+        this.registry.registerBeanDefinition(beanId, bd);
+    }
+
+    private void parseComponentElement(Element beanElement) {
+        String basePackage = beanElement.attributeValue(BASE_PACKAGE_ATTRIBUTE);
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(registry);
+        scanner.doScan(basePackage);
     }
 
     private void parseConstructorArgElements(Element beanElem, BeanDefinition bd) {
@@ -153,5 +172,13 @@ public class XmlBeanDefinitionReader {
         } else {
             throw new RuntimeException(elementName + "must specify a ref or value");
         }
+    }
+
+    public boolean isDefaultNamespace(String namespaceUri) {
+        return (!StringUtils.hasLength(namespaceUri) || BEANS_NAMESPACE_URI.equals(namespaceUri));
+    }
+
+    public boolean isContextNamespace(String namespaceUri) {
+        return (!StringUtils.hasLength(namespaceUri) || CONTEXT_NAMESPACE_URI.equals(namespaceUri));
     }
 }
