@@ -3,13 +3,14 @@ package org.whyspring.core.type.classreading;
 import org.springframework.asm.AnnotationVisitor;
 import org.springframework.asm.Type;
 import org.whyspring.core.annotation.AnnotationAttributes;
+import org.whyspring.core.type.AnnotationMetadata;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class AnnotationMetadataReadingVisitor extends ClassMetadataReadingVisitor {
+public class AnnotationMetadataReadingVisitor extends ClassMetadataReadingVisitor implements AnnotationMetadata {
 
     private final Set<String> annotationSet = new LinkedHashSet<String>(4);
 

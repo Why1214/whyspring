@@ -3,9 +3,10 @@ package org.whyspring.core.type.classreading;
 import org.springframework.asm.ClassVisitor;
 import org.springframework.asm.Opcodes;
 import org.springframework.asm.SpringAsmInfo;
+import org.whyspring.core.type.ClassMetadata;
 import org.whyspring.util.ClassUtils;
 
-public class ClassMetadataReadingVisitor extends ClassVisitor {
+public class ClassMetadataReadingVisitor extends ClassVisitor implements ClassMetadata {
 
     // 类名
     private String className;
