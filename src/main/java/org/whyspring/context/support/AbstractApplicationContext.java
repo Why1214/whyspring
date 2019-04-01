@@ -17,7 +17,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
         Resource resource = getResourceByPath(configFile);
         reader.loadBeanDefinition(resource);
-        factory.setBeanClassLoader(this.getClassLoader());
+        factory.setBeanClassLoader(this.getBeanClassLoader());
     }
 
     public Object getBean(String beanId) {
@@ -30,7 +30,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         this.beanClassLoader = beanClassLoader;
     }
 
-    public ClassLoader getClassLoader() {
+    public ClassLoader getBeanClassLoader() {
         return (this.beanClassLoader != null ? this.beanClassLoader : ClassUtils.getDefaultClassLoader());
     }
 }

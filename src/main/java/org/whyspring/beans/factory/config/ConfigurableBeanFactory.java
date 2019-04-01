@@ -6,5 +6,5 @@ public interface ConfigurableBeanFactory extends BeanFactory {
 
     void setBeanClassLoader(ClassLoader beanClassLoader);
 
-    ClassLoader getClassLoader();
+    ClassLoader getBeanClassLoader();
 }

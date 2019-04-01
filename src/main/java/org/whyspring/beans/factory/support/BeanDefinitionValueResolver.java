@@ -1,13 +1,14 @@
 package org.whyspring.beans.factory.support;
 
+import org.whyspring.beans.factory.BeanFactory;
 import org.whyspring.beans.factory.config.RuntimeBeanReference;
 import org.whyspring.beans.factory.config.TypedStringValue;
 
 public class BeanDefinitionValueResolver {
 
-    private final DefaultBeanFactory beanFactory;
+    private final BeanFactory beanFactory;
 
-    public BeanDefinitionValueResolver(DefaultBeanFactory beanFactory) {
+    public BeanDefinitionValueResolver(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
 
