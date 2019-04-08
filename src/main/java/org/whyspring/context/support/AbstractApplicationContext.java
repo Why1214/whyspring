@@ -1,5 +1,7 @@
 package org.whyspring.context.support;
 
+import org.whyspring.beans.factory.annotation.AutowiredAnnotationProcessor;
+import org.whyspring.beans.factory.config.ConfigurableBeanFactory;
 import org.whyspring.beans.factory.support.DefaultBeanFactory;
 import org.whyspring.beans.factory.xml.XmlBeanDefinitionReader;
 import org.whyspring.context.ApplicationContext;
@@ -18,6 +20,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         Resource resource = getResourceByPath(configFile);
         reader.loadBeanDefinitions(resource);
         factory.setBeanClassLoader(this.getBeanClassLoader());
+        registerBeanPostProcessors(factory);
     }
 
     public Object getBean(String beanId) {
@@ -32,5 +35,11 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 
     public ClassLoader getBeanClassLoader() {
         return (this.beanClassLoader != null ? this.beanClassLoader : ClassUtils.getDefaultClassLoader());
+    }
+
+    protected void registerBeanPostProcessors(ConfigurableBeanFactory beanFactory) {
+        AutowiredAnnotationProcessor processor = new AutowiredAnnotationProcessor();
+        processor.setBeanFactory(beanFactory);
+        factory.addBeanPostProcessor(processor);
     }
 }

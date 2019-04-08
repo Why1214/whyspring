@@ -3,6 +3,7 @@ package org.whyspring.beans.factory.annotation;
 import org.whyspring.beans.BeansException;
 import org.whyspring.beans.factory.BeanCreationException;
 import org.whyspring.beans.factory.config.AutowireCapableBeanFactory;
+import org.whyspring.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.whyspring.core.annotation.AnnotationUtils;
 import org.whyspring.util.ReflectionUtils;
 
@@ -15,7 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-public class AutowiredAnnotationProcessor {
+public class AutowiredAnnotationProcessor implements InstantiationAwareBeanPostProcessor {
 
     // 提供处理依赖的能力
     private AutowireCapableBeanFactory beanFactory;
@@ -114,6 +115,7 @@ public class AutowiredAnnotationProcessor {
         return true;
     }
 
+    // 实例化之后，实现AutoWired
     public void postProcessPropertyValues(Object bean, String beanName) throws BeansException {
         InjectionMetadata metadata = buildAutowiringMetadata(bean.getClass());
         try {

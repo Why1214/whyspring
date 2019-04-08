@@ -4,19 +4,24 @@ import org.whyspring.beans.BeanDefinition;
 import org.whyspring.beans.PropertyValue;
 import org.whyspring.beans.SimpleTypeConverter;
 import org.whyspring.beans.factory.BeanCreationException;
+import org.whyspring.beans.factory.config.BeanPostProcessor;
 import org.whyspring.beans.factory.config.ConfigurableBeanFactory;
 import org.whyspring.beans.factory.config.DependencyDescriptor;
+import org.whyspring.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.whyspring.util.ClassUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         implements ConfigurableBeanFactory, BeanDefinitionRegistry {
+
+    private List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
     // 存放所有bean的定义
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<String, BeanDefinition>(64);
@@ -25,6 +30,14 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
 
     public DefaultBeanFactory() {
 
+    }
+
+    public void addBeanPostProcessor(BeanPostProcessor postProcessor) {
+        this.beanPostProcessors.add(postProcessor);
+    }
+
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
     }
 
     public void registerBeanDefinition(String beanId, BeanDefinition beanDefinition) {
@@ -80,6 +93,13 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     }
 
     private void populateBean(BeanDefinition bd, Object bean) {
+        // 处理bean的属性，这些属性都带注解
+        for (BeanPostProcessor processor : this.getBeanPostProcessors()) {
+            if (processor instanceof InstantiationAwareBeanPostProcessor) {
+                ((InstantiationAwareBeanPostProcessor) processor).postProcessPropertyValues(bean, bd.getBeanId());
+            }
+        }
+
         List<PropertyValue> propertyValues = bd.getPropertyValues();
         if (propertyValues == null || propertyValues.size() == 0) {
             return;
