@@ -19,7 +19,7 @@ public class BeanDefinitionValueResolverTest {
     public void setUp(){
         DefaultBeanFactory factory = new DefaultBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
-        reader.loadBeanDefinition(new ClassPathResource("petstore-v2.xml"));
+        reader.loadBeanDefinitions(new ClassPathResource("petstore-v2.xml"));
 
         resolver = new BeanDefinitionValueResolver(factory);
     }

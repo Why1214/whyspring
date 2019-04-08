@@ -5,6 +5,7 @@ import org.whyspring.beans.PropertyValue;
 import org.whyspring.beans.SimpleTypeConverter;
 import org.whyspring.beans.factory.BeanCreationException;
 import org.whyspring.beans.factory.config.ConfigurableBeanFactory;
+import org.whyspring.beans.factory.config.DependencyDescriptor;
 import org.whyspring.util.ClassUtils;
 
 import java.beans.BeanInfo;
@@ -115,5 +116,32 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
 
     public ClassLoader getBeanClassLoader() {
         return (this.beanClassLoader != null ? this.beanClassLoader : ClassUtils.getDefaultClassLoader());
+    }
+
+    public Object resolveDependency(DependencyDescriptor descriptor) {
+        // 根据依赖描述实例拿到属性的class对象
+        Class<?> typeToMatch = descriptor.getDependencyType();
+        // 循环beandifition集合，判断是否存在与typeToMatch相匹配的beanDifition
+        for (BeanDefinition bd : this.beanDefinitionMap.values()) {
+            //确保BeanDefinition 有Class对象
+            resolveBeanClass(bd);
+            Class<?> beanClass = bd.getBeanClass();
+            if (typeToMatch.isAssignableFrom(beanClass)) {
+                return this.getBean(bd.getBeanId());
+            }
+        }
+        return null;
+    }
+
+    public void resolveBeanClass(BeanDefinition bd) {
+        if (bd.hasBeanClass()) {
+            return;
+        } else {
+            try {
+                bd.resolveBeanClass(this.getBeanClassLoader());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("can't load class:" + bd.getBeanClassName());
+            }
+        }
     }
 }
