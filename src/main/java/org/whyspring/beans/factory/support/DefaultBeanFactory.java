@@ -4,6 +4,7 @@ import org.whyspring.beans.BeanDefinition;
 import org.whyspring.beans.PropertyValue;
 import org.whyspring.beans.SimpleTypeConverter;
 import org.whyspring.beans.factory.BeanCreationException;
+import org.whyspring.beans.factory.NoSuchBeanDefinitionException;
 import org.whyspring.beans.factory.config.BeanPostProcessor;
 import org.whyspring.beans.factory.config.ConfigurableBeanFactory;
 import org.whyspring.beans.factory.config.DependencyDescriptor;
@@ -163,5 +164,14 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
                 throw new RuntimeException("can't load class:" + bd.getBeanClassName());
             }
         }
+    }
+
+    public Class<?> getType(String beanName) throws NoSuchBeanDefinitionException {
+        BeanDefinition bd = this.getBeanDefinition(beanName);
+        if (bd == null) {
+            throw new NoSuchBeanDefinitionException(beanName);
+        }
+        resolveBeanClass(bd);
+        return bd.getBeanClass();
     }
 }

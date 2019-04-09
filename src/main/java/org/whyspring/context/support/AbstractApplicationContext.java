@@ -1,5 +1,6 @@
 package org.whyspring.context.support;
 
+import org.whyspring.beans.factory.NoSuchBeanDefinitionException;
 import org.whyspring.beans.factory.annotation.AutowiredAnnotationProcessor;
 import org.whyspring.beans.factory.config.ConfigurableBeanFactory;
 import org.whyspring.beans.factory.support.DefaultBeanFactory;
@@ -41,5 +42,9 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         AutowiredAnnotationProcessor processor = new AutowiredAnnotationProcessor();
         processor.setBeanFactory(beanFactory);
         factory.addBeanPostProcessor(processor);
+    }
+
+    public Class<?> getType(String beanName) throws NoSuchBeanDefinitionException {
+        return this.factory.getType(beanName);
     }
 }
