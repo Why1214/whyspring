@@ -27,8 +27,13 @@ public class PetStoreService {
         return accountDao;
     }
 
-    public void placeOrder() {
+    public String placeOrder() {
         System.out.println("place order");
         MessageTracker.addMsg("place order");
+        return "why";
+    }
+
+    public void placeOrderWithException() {
+        throw new NullPointerException();
     }
 }
