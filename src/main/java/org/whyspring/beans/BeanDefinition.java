@@ -31,4 +31,6 @@ public interface BeanDefinition {
     public Class<?> getBeanClass() throws IllegalStateException;
 
     public boolean hasBeanClass();
+
+    public boolean isSynthetic();
 }
