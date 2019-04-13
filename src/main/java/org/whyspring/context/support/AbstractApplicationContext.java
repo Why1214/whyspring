@@ -1,5 +1,6 @@
 package org.whyspring.context.support;
 
+import org.whyspring.aop.aspectj.AspectJAutoProxyCreator;
 import org.whyspring.beans.factory.NoSuchBeanDefinitionException;
 import org.whyspring.beans.factory.annotation.AutowiredAnnotationProcessor;
 import org.whyspring.beans.factory.config.ConfigurableBeanFactory;
@@ -8,6 +9,8 @@ import org.whyspring.beans.factory.xml.XmlBeanDefinitionReader;
 import org.whyspring.context.ApplicationContext;
 import org.whyspring.core.io.Resource;
 import org.whyspring.util.ClassUtils;
+
+import java.util.List;
 
 public abstract class AbstractApplicationContext implements ApplicationContext {
 
@@ -42,9 +45,17 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         AutowiredAnnotationProcessor processor = new AutowiredAnnotationProcessor();
         processor.setBeanFactory(beanFactory);
         factory.addBeanPostProcessor(processor);
+
+        AspectJAutoProxyCreator aspectJAutoProxyCreator = new AspectJAutoProxyCreator();
+        aspectJAutoProxyCreator.setBeanFactory(beanFactory);
+        factory.addBeanPostProcessor(aspectJAutoProxyCreator);
     }
 
     public Class<?> getType(String beanName) throws NoSuchBeanDefinitionException {
         return this.factory.getType(beanName);
+    }
+
+    public List<Object> getBeansByType(Class<?> type) {
+        return this.factory.getBeansByType(type);
     }
 }

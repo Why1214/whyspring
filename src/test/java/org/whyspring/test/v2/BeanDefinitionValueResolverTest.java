@@ -27,7 +27,7 @@ public class BeanDefinitionValueResolverTest {
     @Test
     public void testResolveRuntimeBeanReference() {
         RuntimeBeanReference reference = new RuntimeBeanReference("accountDao");
-        Object value = resolver.resolverValueIfNecessary(reference);
+        Object value = resolver.resolveValueIfNecessary(reference);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof AccountDao);
@@ -36,7 +36,7 @@ public class BeanDefinitionValueResolverTest {
     @Test
     public void testResolveTypedStringValue() {
         TypedStringValue stringValue = new TypedStringValue("test");
-        Object value = resolver.resolverValueIfNecessary(stringValue);
+        Object value = resolver.resolveValueIfNecessary(stringValue);
 
         Assert.assertNotNull(value);
         Assert.assertEquals("test", value);

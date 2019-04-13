@@ -6,7 +6,6 @@ import org.whyspring.beans.BeanDefinition;
 import org.whyspring.beans.ConstructorArgument;
 import org.whyspring.beans.SimpleTypeConverter;
 import org.whyspring.beans.factory.BeanCreationException;
-import org.whyspring.beans.factory.config.ConfigurableBeanFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -15,9 +14,9 @@ public class ConstructorResolver {
 
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private final ConfigurableBeanFactory beanFactory;
+    private final AbstractBeanFactory beanFactory;
 
-    public ConstructorResolver(ConfigurableBeanFactory beanFactory) {
+    public ConstructorResolver(AbstractBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
 
@@ -90,7 +89,7 @@ public class ConstructorResolver {
 
             try {
                 // 转成真正需要的值
-                Object resolvedValue = valueResolver.resolverValueIfNecessary(originalValue);
+                Object resolvedValue = valueResolver.resolveValueIfNecessary(originalValue);
 
                 // 将值转成构造函数需要的类型
                 Object convertedValue = typeConverter.convertIfNecessary(resolvedValue, parameterType);
