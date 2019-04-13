@@ -2,11 +2,13 @@ package org.whyspring.aop.config;
 
 import org.whyspring.beans.BeanUtils;
 import org.whyspring.beans.factory.BeanFactory;
+import org.whyspring.beans.factory.BeanFactoryAware;
+import org.whyspring.beans.factory.FactoryBean;
 import org.whyspring.util.StringUtils;
 
 import java.lang.reflect.Method;
 
-public class MethodLocatingFactory {
+public class MethodLocatingFactory implements FactoryBean<Method>, BeanFactoryAware {
 
     private String targetBeanName;
 
@@ -48,5 +50,9 @@ public class MethodLocatingFactory {
 
     public Method getObject() throws Exception {
         return this.method;
+    }
+
+    public Class<?> getObjectType() {
+        return Method.class;
     }
 }
